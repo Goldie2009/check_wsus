@@ -1,0 +1,35 @@
+# nsclient.ini
+
+[/settings/external scripts/scripts]
+check_wsus=cmd /c echo scripts\wsus_stacking.ps1 $ARG1$; exit $lastexitcode | powershell -command -
+
+#######################################################################################################
+
+# commands.conf
+
+object CheckCommand "check_nrpe_wsus" {
+	import "plugin-check-command"
+	command = [ PluginDir + "/check_nrpe" ]
+	arguments = {
+		"-H" = "$host.address$"
+		"-c" = "$command$"
+		"-t" = "$time$"
+		"-a" = "$argument$ $wrange$ $crange$"
+		}
+	}
+	
+#######################################################################################################
+
+# services.conf
+
+apply Service "WSUS Computer needing updates" {
+	import "generic-service-update_no_pnp"
+	check_command = "check_nrpe_wsus"
+	vars.time = "60"
+	vars.port = "5666"
+	vars.command = "check_wsus"
+	vars.argument = "ComputersNeedingUpdates"
+	vars.wrange = "10"
+	vars.crange = "15"
+	assign where match("foobar", host.name)
+ }
