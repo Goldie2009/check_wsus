@@ -1,0 +1,8 @@
+name: check_wsus
+description: "file:///README.md"
+url: "https://github.com/Goldie2009/check_wsus"
+tags: WSUS,Updates,Windows,Patch
+vendor: Microsoft
+target: Operating System
+type: Plugin
+license: gpl
